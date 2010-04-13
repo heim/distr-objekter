@@ -59,7 +59,7 @@ const NoPesterServer <- class NoPesterServer
 	
 	export operation registerFile[hash : Integer, c : NoPesterClient]
 		%if filelist contains hash, add c to array
-		%else make new array of nopesterclient and add with hash as key.
+> > > 		%else make new array of nopesterclient and add with hash as key.
 	end registerFile
 end NoPesterServer
 
