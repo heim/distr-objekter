@@ -19,7 +19,6 @@ const t <- object t
 			end failure
 	end assertStringEquals
 	
-	
 	export operation assertIntegerEquals[val1 : Integer, val2 : Integer]
 			assert val1 = val2
 			self.wo["."]			
@@ -28,7 +27,6 @@ const t <- object t
 				assert false
 			end failure
 	end assertIntegerEquals
-	
 	
 	export operation assertTrue[val : Boolean]
 		assert val
@@ -48,8 +46,7 @@ const t <- object t
 		end failure
 	end assertFalse
 	
-	
-	export operation assertContains[input : Array.of[String], value : String, occurences : Integer]
+	export operation assertContains[input : Array.of[File], value : String, occurences : Integer]
 			var result : Integer <- 0
 			
 			for i: Integer <- 0 while i < (input.upperbound + 1) by i <- i + 1
