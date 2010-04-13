@@ -1,12 +1,4 @@
-const File <- class File[fileContents : String]
-	attached field hash : Integer
-	attached field contents : String <- fileContents
-	initially
-		%hash <- Hasher.hash[contents]
-	end initially
-end File
 
-export File
 
 
 const fileTestSuite <- object testSuite
@@ -21,9 +13,9 @@ const fileTestSuite <- object testSuite
 	end testCanAccessContents
 	
 	operation testContentsHashesCorrectly
-		%const correctHash <- Hasher.hash["Contents"]
+		const correctHash <- Hasher.create.hash["Contents"]
 		const testFile <- File.create["Contents"]
-		%t.assertIntegerEquals[correctHash, testFile.getHash]
+		t.assertIntegerEquals[correctHash, testFile.getHash]
 	end testContentsHashesCorrectly
 	
 	initially

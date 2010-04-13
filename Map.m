@@ -1,5 +1,4 @@
 export Map
-
 const Map <- immutable object Map
   export function of [ktype : type, vtype : type] -> [r : MapCreatorType]
     suchthat ktype *> immutable typeobject key
@@ -11,6 +10,7 @@ const Map <- immutable object Map
       vtype
     where 
       MapType <- typeobject MapType
+				function getValues -> [retVals : Array.of[vtype]]
 				operation insert [key : ktype, value : vtype]
 				operation delete [key : ktype]
 				function  lookup [key : ktype] -> [value : vtype]
@@ -55,6 +55,10 @@ const Map <- immutable object Map
   				end if
 				end for
      	end delete
+
+			export function getValues -> [retVals : Array.of[vtype]]
+				retVals <- values
+			end getValues
      
 			export function lookup [key : ktype] -> [value : vtype]
 				const limit <- keys.upperbound

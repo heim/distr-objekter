@@ -1,18 +1,22 @@
 
 const hasherTestSuite <- object testSuite 
 	
+	
+	
 	operation testUnequalStringsHasDifferentHashValue
-		t.assertIntegerNotEqual[Hasher.hash["The quick brown fox"], Hasher.hash["The quick brown fox."]]
+		const hash_obj <- Hasher.create
+		t.assertIntegerNotEqual[hash_obj.hash["The quick brown fox"], hash_obj.hash["The quick brown fox."]]
 	end testUnequalStringsHasDifferentHashValue
 	
 	operation testEqualStringsHasEqualValue
-		t.assertIntegerEquals[Hasher.hash["Equal String"], Hasher.hash["Equal String"]]
+		const hash_obj <- Hasher.create
+		t.assertIntegerEquals[hash_obj.hash["Equal String"], hash_obj.hash["Equal String"]]
 	end testEqualStringsHasEqualValue
 	
-	process
+	initially
 		self.testUnequalStringsHasDifferentHashValue
 		self.testEqualStringsHasEqualValue
-	end process
+	end initially
 
 end testSuite
 

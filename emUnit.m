@@ -46,11 +46,11 @@ const t <- object t
 		end failure
 	end assertFalse
 	
-	export operation assertContains[input : Array.of[File], value : String, occurences : Integer]
+	export operation assertContains[input : Array.of[File], value : File, occurences : Integer]
 			var result : Integer <- 0
 			
 			for i: Integer <- 0 while i < (input.upperbound + 1) by i <- i + 1
-				if value == input[i] then
+				if value.getHash = input[i].getHash then
 					result <- result + 1
 				end if
 			end for
@@ -58,7 +58,7 @@ const t <- object t
 			assert result == occurences
 			self.wo["."]			
 			failure 
-				self.wo["Test failed. Array contained " || result.asString || " occurences of " || value || ". Expected " || occurences.asString || ".\n"]
+				self.wo["Test failed. Array contained " || result.asString || " occurences of " || value.gethash.asString || ". Expected " || occurences.asString || ".\n"]
 				assert false
 			end failure
 	end assertContains
