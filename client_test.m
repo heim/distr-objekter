@@ -8,7 +8,8 @@ const testSuite <- object testSuite
 		const server <- self.makeServer
 		const client <- self.makeClient[server]
 		client.registerFile[testFile]
-		t.assertContains[client.fileList, testFile, 1]		
+		const testServerFile <- ServerFile.create[testFile.getHash, testFile.getName]
+		t.assertContains[client.fileList, testServerFile, 1]		
 	end testClientCanRegisterFileLocally
 	
 	operation testEmptyClientHasNoFiles
@@ -22,12 +23,34 @@ const testSuite <- object testSuite
 		const client <- self.makeClient[server]
 		const testfile <- self.makeFile
 		client.registerFile[testFile]
-		t.assertContains[server.fileList, testFile, 1]
-		
 	end testClientCanRegisterFileAtServer
+	
+	
+	
+	operation testClientCanRetrieveRegisteredFileFromServer
+		const server <- self.makeServer
+		const client <- self.makeClient[server]
+		const testFile <- self.makeFile
+		client.registerFile[testFile]
+		const testServerFile <- ServerFile.create[testFile.getHash, testFile.getName]
+		t.assertContains[server.fileList, testServerFile, 1]
+	end testClientCanRetrieveRegisteredFileFromServer
+
+	operation testClientCanRetrievePeerList
+		const server <- self.makeServer
+		const client <- self.makeClient[server]
+		const testFile <- self.makeFile
+		client.registerFile[testFile]
+		const testServerFile <- ServerFile.create[testFile.getHash, testFile.getName]
+		
+		const actualClient <- server.getFileProviders[testServerFile][0]
+		
+		assert ((locate actualClient) == (locate self))
+		
+	end testClientCanRetrievePeerList
 
 	operation makeFile -> [f : File]
-		f <- File.create["The quick brown fox."]
+		f <- File.create["brownfox.txt", "The quick brown fox."]
 	end makeFile
 	
 	operation makeClient[s : NoPesterServer] -> [c : NoPesterClient]
@@ -38,6 +61,7 @@ const testSuite <- object testSuite
 		s <- NoPesterServer.create
 		move s to serverNode
 	end makeServer
+	
 
 	process
 		assert (all.upperbound > 0)
@@ -45,7 +69,9 @@ const testSuite <- object testSuite
 		
 		self.testClientCanRegisterFileLocally
 		self.testClientCanRegisterFileAtServer
+		self.testClientCanRetrieveRegisteredFileFromServer
 		
+		self.testClientCanRetrievePeerList
 	end process
 
 

@@ -14,26 +14,41 @@ const Hasher <- class Hasher
 end Hasher
 
 
-const File <- class File[fileContents : String]
+const File <- immutable class File[fileName : String, fileContents : String]
 	attached field hash : Integer
 	attached field contents : String <- fileContents
+	attached field name : String <- fileName
+
 	initially
 		const hash_obj <- Hasher.create
 		hash <- hash_obj.hash[contents]
 	end initially
+	
+	
+	export function =[other : File] -> [r : Boolean]
+		r <- (other.getHash = self.getHash) & (other.getName = self.getName) & (other.getContents = self.getContents)
+	end =
+	
+	export function <[other : File] -> [r : Boolean]
+		r <- (self.getHash < other.getHash) & (self.getName < other.getName)
+	end <
+	
+	export function hash -> [i : Integer]
+		i <- self.getHash
+	end hash
 end File
 
 
 const NoPesterClient <- class NoPesterClient[s : NoPesterServer]
 	
-	var fileList : Map.of[Integer, File] <- Map.of[Integer, File].create
+	var fileList : Map.of[ServerFile, File] <- Map.of[ServerFile, File].create
 	const server <- s
 	initially
 	
 	end initially
 	
-	export operation fileList -> [list : Array.of[File]]
-		list <- fileList.getValues
+	export operation fileList -> [list : Array.of[ServerFile]]
+		list <- fileList.getKeys
 	end fileList
 	
 	export operation registerFile[inputFile : File]
@@ -42,24 +57,73 @@ const NoPesterClient <- class NoPesterClient[s : NoPesterServer]
 	end registerFile
 	
 	operation registerRemotely[inputFile : File]
-		server.registerFile[inputFile.getHash, self]
+		server.registerFile[ServerFile.create[inputFile.getHash, inputFile.getName], self]
 	end registerRemotely
 	
 	operation registerFileLocally[inputFile : File]
-		fileList.insert[inputFile.getHash, inputFile]
+		fileList.insert[ServerFile.create[inputFile.getHash, inputFile.getName], inputFile]
 	end registerFileLocally
+	
+	
+	export function =[other : ServerFile] -> [b : Boolean]
+		b <- ((locate other) == (locate self))
+	end =
 
 end NoPesterClient
 
+const ServerFile <- immutable class ServerFile[fileHash : Integer, fileName : String]
+	attached field hash : Integer <- fileHash
+	attached field name : String <- fileName
+	
+	export function = [other : ServerFile] -> [r : Boolean]
+		r <- (other.getHash == self.getHash) & (other.getName == self.getName)
+	end =
+	
+	export function <[other : ServerFile] -> [r : Boolean]
+		r <- (self.getHash < other.getHash) & (self.getName < other.getName)
+	end <
+	
+	export function hash -> [i : Integer]
+		i <- self.getHash
+	end hash
+	
+end ServerFile
+
+export ServerFile
+
 
 const NoPesterServer <- class NoPesterServer
-	export operation fileList -> [list : Array.of[File]]
-		
+	
+	var fileMap : Map.of[ServerFile, Array.of[NoPesterClient]]
+	
+	initially
+	
+		fileMap <- Map.of[ServerFile, Array.of[NoPesterClient]].create
+	end initially
+
+	export operation fileList -> [list : Array.of[ServerFile]]
+		list <- fileMap.getKeys
 	end fileList
 	
-	export operation registerFile[hash : Integer, c : NoPesterClient]
-		%if filelist contains hash, add c to array
-> > > 		%else make new array of nopesterclient and add with hash as key.
+	export operation getFileProviders[file : ServerFile] -> [clientList : Array.of[NoPesterClient]]
+		if fileMap.contains[file] then
+			clientList <- fileMap.lookup[file]
+		else
+			clientList <- Array.of[NoPesterClient].empty
+		end if
+	end getFileProviders
+	
+	export operation registerFile[file : ServerFile, c : NoPesterClient]
+		var clientArray : Array.of[NoPesterClient]
+		clientArray <- fileMap.lookup[file]
+		if clientArray !== nil then
+			clientArray.addUpper[c]
+			fileMap.insert[file, clientArray]
+ 		else 
+			clientArray <- Array.of[NoPesterClient].empty
+			clientArray.addUpper[c]
+			fileMap.insert[file, clientArray]
+		end if
 	end registerFile
 end NoPesterServer
 

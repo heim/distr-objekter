@@ -59,6 +59,14 @@ const Map <- immutable object Map
 			export function getValues -> [retVals : Array.of[vtype]]
 				retVals <- values
 			end getValues
+			
+			export function getKeys -> [retVals : Array.of[ktype]]
+				retVals <- keys
+			end getKeys
+			
+			export function contains [key : ktype] -> [b : Boolean]
+				b <- (self.lookup[key] !== nil)
+			end contains
      
 			export function lookup [key : ktype] -> [value : vtype]
 				const limit <- keys.upperbound

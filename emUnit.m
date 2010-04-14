@@ -46,11 +46,11 @@ const t <- object t
 		end failure
 	end assertFalse
 	
-	export operation assertContains[input : Array.of[File], value : File, occurences : Integer]
+	export operation assertContains[input : Array.of[ServerFile], value : ServerFile, occurences : Integer]
 			var result : Integer <- 0
 			
 			for i: Integer <- 0 while i < (input.upperbound + 1) by i <- i + 1
-				if value.getHash = input[i].getHash then
+				if value = input[i] then
 					result <- result + 1
 				end if
 			end for
@@ -63,7 +63,24 @@ const t <- object t
 			end failure
 	end assertContains
 	
-	export operation assertEmptyFileArray[input : Array.of[File]]
+	export operation assertStringArrayContains[input : Array.of[String], value : String, occurences : Integer]
+			var result : Integer <- 0
+			
+			for i: Integer <- 0 while i < (input.upperbound + 1) by i <- i + 1
+				if value = input[i] then
+					result <- result + 1
+				end if
+			end for
+			
+			assert result = occurences
+			self.wo["."]			
+			failure 
+				self.wo["Test failed. Array contained " || result.asString || " occurences of " || value || ". Expected " || occurences.asString || ".\n"]
+				assert false
+			end failure
+	end assertStringArrayContains
+	
+	export operation assertEmptyFileArray[input : Array.of[ServerFile]]
 		assert input.empty
 		self.wo["."]			
 		failure 

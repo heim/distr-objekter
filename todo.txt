@@ -1,0 +1,1 @@
+  Lag integrasjonstest og sjekk om det funker med to klienter på hver sin node og en server på tredje noden.
