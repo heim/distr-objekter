@@ -11,6 +11,7 @@ const Map <- immutable object Map
     where 
       MapType <- typeobject MapType
 				function getValues -> [retVals : Array.of[vtype]]
+				function size -> [val : Integer]
 				operation insert [key : ktype, value : vtype]
 				operation delete [key : ktype]
 				function  lookup [key : ktype] -> [value : vtype]
@@ -41,6 +42,10 @@ const Map <- immutable object Map
 				values.addUpper[value]
      	end insert
 
+			export function size -> [val : Integer]
+				val <- (keys.upperbound + 1)
+			end size
+			
  			export operation delete [key : ktype]
 				const limit <- keys.upperbound
 				var found : Boolean <- false
@@ -54,6 +59,10 @@ const Map <- immutable object Map
     				values[i-1] <- values[i]
   				end if
 				end for
+				if found then
+					const rump <- keys.removeUpper
+					const pump <- values.removeUpper
+				end if
      	end delete
 
 			export function getValues -> [retVals : Array.of[vtype]]

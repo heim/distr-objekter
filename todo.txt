@@ -1,1 +1,28 @@
-  Lag integrasjonstest og sjekk om det funker med to klienter på hver sin node og en server på tredje noden.
+"Hvilken tilstand har klienten" 10 min. done
+  En enkel iter loop.
+
+  "Jeg har ikke filen lengre."
+    - Slett lokalt. 10 min. () done
+    - Server må finne filen i hashmapen, iterere gjennom nodene og fjerne den aktuelle noden. 30 min. Done.
+
+
+Funksjonalitet som skal utvikles:
+
+
+"Jeg vil laste ned denne filen." 30 min.
+  - Servere fila fra map. Lage kopifunksjon i fil.
+
+"Hvilke noder er oppegående."
+    Wait-loop. 10 min (research)
+    Lager en liste over noder som er oppe. (5 min)
+    Kjører gjennom alle arrayene i mappen og fjerner overskuddsnoder. 30 min
+      Blir muligens enklere hvis man bruker map.
+    
+
+
+"Hvilken tilstand har server" 30 min.
+  Basically en toString av mappen, en dobbel iter-loop.
+
+
+Gjenstående: 30 + 10 + 5 + 30 + 30.
+
