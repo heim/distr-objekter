@@ -1,0 +1,19 @@
+5 peers. 10 filer.
+
+initielt:
+
+peer 1 har fil 1+2 <- 7
+peer 2 har fil 3+4 <- 5
+peer 3 har fil 5+6 <- 10
+peer 4 har fil 7+8 <- 3,5,9
+peer 5 har fil 9+10 <- -10
+
+
+peer 1 kopierer fil 7
+peer 2 kopierer fil 5
+peer 3 kopierer fil 10
+
+
+peer 4 kopierer fil 3,5,9
+peer 5 sletter fil 10
+

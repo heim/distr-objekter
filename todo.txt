@@ -6,23 +6,22 @@
     - Server må finne filen i hashmapen, iterere gjennom nodene og fjerne den aktuelle noden. 30 min. Done.
 
 
+    "Jeg vil laste ned denne filen." 30 min.
+      - Servere fila fra map. Lage kopifunksjon i fil. ddone
+
+
+      "Hvilken tilstand har server" 30 min. (10 actual)
+        Basically en toString av mappen, en dobbel iter-loop.
+
 Funksjonalitet som skal utvikles:
 
 
-"Jeg vil laste ned denne filen." 30 min.
-  - Servere fila fra map. Lage kopifunksjon i fil.
 
 "Hvilke noder er oppegående."
     Wait-loop. 10 min (research)
     Lager en liste over noder som er oppe. (5 min)
     Kjører gjennom alle arrayene i mappen og fjerner overskuddsnoder. 30 min
-      Blir muligens enklere hvis man bruker map.
-    
+    Blir muligens enklere hvis man bruker map.
 
-
-"Hvilken tilstand har server" 30 min.
-  Basically en toString av mappen, en dobbel iter-loop.
-
-
-Gjenstående: 30 + 10 + 5 + 30 + 30.
+Gjenstående: 30 + 10 + 5: 45 min.
 

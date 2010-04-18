@@ -60,8 +60,9 @@ const Map <- immutable object Map
   				end if
 				end for
 				if found then
-					const rump <- keys.removeUpper
-					const pump <- values.removeUpper
+					%to make self.size return correct value
+					const k1 <- keys.removeUpper
+					const k2 <- values.removeUpper
 				end if
      	end delete
 

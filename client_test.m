@@ -49,6 +49,18 @@ const testSuite <- object testSuite
 		
 	end testClientCanRetrievePeerList
 
+
+
+	operation testClientCanRetrieveFileFromPeer
+		const server <- self.makeServer
+		const client <- self.makeClient[server]
+		const testFile <- self.makeFile
+		const sFile <- ServerFile.create[testFile.getHash, testFile.getName]
+		client.registerFile[testFile]
+		
+	 	assert client.retrieveFile[sFile, client]
+	
+	end testClientCanRetrieveFileFromPeer
 	operation makeFile -> [f : File]
 		f <- File.create["brownfox.txt", "The quick brown fox."]
 	end makeFile
@@ -70,8 +82,9 @@ const testSuite <- object testSuite
 		self.testClientCanRegisterFileLocally
 		self.testClientCanRegisterFileAtServer
 		self.testClientCanRetrieveRegisteredFileFromServer
-		
 		self.testClientCanRetrievePeerList
+		self.testClientCanRetrieveFileFromPeer
+		
 	end process
 
 
