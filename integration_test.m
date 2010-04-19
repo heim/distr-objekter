@@ -41,8 +41,6 @@ const IntegrationTest <- object IntegrationTest
 
 		server.printState
 		
-		
-		
 	end process
 
 	operation wo[o : String]
