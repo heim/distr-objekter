@@ -1,0 +1,3 @@
+
+- Vanskelig å ikke knytte "replicable" mot rammeverket.
+- sjekker at primary copy og replicas ikke ligger på samme node
