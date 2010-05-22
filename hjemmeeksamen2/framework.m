@@ -38,7 +38,7 @@ const Framework <- immutable object Framework
 
 			var primaryCopy : rtype
 			var primaryCopyLNN : Integer
-			var isPrimaryFramework <- false
+			var isPrimaryFramework :boolean <- false
 			var replicationReady : boolean <- false
 			
 			
@@ -147,7 +147,7 @@ const Framework <- immutable object Framework
 			end makeReplicaOnNode
 			
 			operation makeNewReplicaFrameworkOnNode[n : Node]
-				var replicaFramework <- Framework.of[rtype].create
+				var replicaFramework :FrameworkType <- Framework.of[rtype].create
 				replicaFramework.setPrimaryFramework[self]
 				move replicaFramework to n
 			    replicaFrameworkCount <- replicaFrameworkCount + 1
@@ -272,7 +272,7 @@ const Framework <- immutable object Framework
 					self.wo["This is the primary framework"]
 				else
 					self.wo["This is replica framework number " + replicaFrameworkId]
-				end
+				end if
 			end writeStatus
 	
 			operation wo[o : String]
