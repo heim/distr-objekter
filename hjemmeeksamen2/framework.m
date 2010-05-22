@@ -17,10 +17,15 @@ const Framework <- immutable object Framework
 			operation getPrimaryCopy[] -> [rtype]
 			operation replicateMe[primaryCopy : rtype, n : Integer]
 			operation getReplicas[] -> [Array.of[rtype]]
+			operation setPrimaryFramework[FrameworkType]
+			operation setReplicaFrameworkId[Integer]
+			operation setReplicaFrameworkCount[Integer]
+			operation getReplicaFrameworkCount[] -> [Integer]
+			operation writeStatus[]
 	    end FrameworkType
 
 		where
-	      FrameworkCreatorType <- immutable typeobject FrameworkCreatorType
+	    FrameworkCreatorType <- immutable typeobject FrameworkCreatorType
 					operation create -> [FrameworkType]
 					function getSignature -> [Signature]
 	    end FrameworkCreatorType
@@ -33,8 +38,15 @@ const Framework <- immutable object Framework
 
 			var primaryCopy : rtype
 			var primaryCopyLNN : Integer
-	
+			var isPrimaryFramework <- false
 			var replicationReady : boolean <- false
+			
+			
+			var primaryFramework : FrameworkType
+			
+			var replicaFrameworkId : Integer <- 0
+			
+			var replicaFrameworkCount : Integer <- 0
 	
 	
 			var replicas : Map.of[Integer, rtype]
@@ -45,7 +57,24 @@ const Framework <- immutable object Framework
 				replicas <- Map.of[Integer, rtype].create
 				self.wo["Available nodes " || (all.upperbound + 1).asString ]
 			end initially
+			
+			
+			export operation setReplicaFrameworkCount[rfc : Integer]
+				replicaFrameworkCount <- rfc
+			end setReplicaFrameworkCount
+			
+			
+			export operation getReplicaFrameworkCount[] -> [rfc : Integer]
+				rfc <- replicaFrameworkCount
+			end getReplicaFrameworkCount
 
+			export operation setPrimaryFramework[pf : FrameworkType]
+				primaryFramework <- pf
+			end setPrimaryFramework
+			
+			export operation setReplicaFrameworkId[rfi : Integer]
+				replicaFrameworkId <- rfi
+			end setReplicaFrameworkId
 			export operation getPrimaryCopy[] -> [r : rtype]
 				r <- primaryCopy
 			end getPrimaryCopy
@@ -58,10 +87,11 @@ const Framework <- immutable object Framework
 	
 		
 				primaryCopy <- pc
-		
+				isPrimaryFramework <- true
 				primaryCopy.addObserver[self]
 				primaryCopy.setIsPrimaryCopy[]
 				primaryCopyLNN <- (locate primaryCopy).getLNN
+				
 		
 				%//if count is more thant available nodes, then we can not maintain more replicas than we have available nodes
 				if (all.upperbound + 1) < count then
@@ -95,17 +125,34 @@ const Framework <- immutable object Framework
 						if replicas.contains[rNode.getLNN] = false then
 							self.wo["replicas.contains[rNode.getLNN] = false"]
 							self.wo["found node without a replica or primary copy"]
-							var replica : rtype <- primaryCopy.cloneMe
-							replica.addObserver[self]
-							move replica to rNode
-							replicas.insert[rNode.getLNN, replica]
+							
+							
+							self.makeReplicaOnNode[rNode]
+							self.makeNewReplicaFrameworkOnNode[rNode]
 							newReplicas <- newReplicas + 1
-							replica.writeStatus[]
+
+							
+
 						end if
 					end if
 				end for
 			end makeNewReplicas
 			
+			operation makeReplicaOnNode[n : Node]
+				var replica : rtype <- primaryCopy.cloneMe
+				replica.addObserver[self]
+				move replica to n
+				replicas.insert[n.getLNN, replica]
+				replica.writeStatus[]
+			end makeReplicaOnNode
+			
+			operation makeNewReplicaFrameworkOnNode[n : Node]
+				var replicaFramework <- Framework.of[rtype].create
+				replicaFramework.setPrimaryFramework[self]
+				move replicaFramework to n
+			    replicaFrameworkCount <- replicaFrameworkCount + 1
+				replicaFramework.writeStatus[]
+			end makeNewReplicaFrameworkOnNode
 
 			export operation notify[obj : rtype]
 				if obj == primaryCopy then
@@ -218,6 +265,15 @@ const Framework <- immutable object Framework
 					self.wo["A copy is unavailable "]
 				end unavailable
 			end maintainReplicas
+			
+			
+			export operation writeStatus[]
+				if isPrimaryFramework = true then
+					self.wo["This is the primary framework"]
+				else
+					self.wo["This is replica framework number " + replicaFrameworkId]
+				end
+			end writeStatus
 	
 			operation wo[o : String]
 				(locate 1)$stdout.putString[o || "\n"]

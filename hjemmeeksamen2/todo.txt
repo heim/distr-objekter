@@ -1,0 +1,18 @@
+
+Funksjonell beskrivelse:
+	
+-framework.create
+	
+-Kaller replicateme
+	
+-Framework lager en passiv kopi på samme noder som  replikaene. de gis en id som brukes til å velge nytt primary framework
+	
+-Primary framework lytter på alle endringer.
+	
+-Replika-framework lytter også på endringer, men gjør ingen ting med mindre det er blitt promoted til primary 															                 framework.
+
+-som replika-framework finnes det en oppførsel som sjekker om primary framework lever.
+-replika-framework oppdaterer også sin liste over replika-objekter.
+
+
+- når primary-framework dør blir det satt til null, så sover replika-frameworkenne i x milisekunder (multiplum av id), når det våkner sjekkes det at det ikke er satt noen ny primary framework. hvis det ikke er noe nytt primary framework itererer den over alle andre replika-framework og setter seg selv som primary framework.
