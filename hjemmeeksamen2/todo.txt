@@ -9,10 +9,40 @@ Funksjonell beskrivelse:
 	
 -Primary framework lytter på alle endringer.
 	
--Replika-framework lytter også på endringer, men gjør ingen ting med mindre det er blitt promoted til primary 															                 framework.
+-(Replika-framework lytter også på endringer, men gjør ingen ting med mindre det er blitt promoted til primary 															                 framework.)
 
 -som replika-framework finnes det en oppførsel som sjekker om primary framework lever.
--replika-framework oppdaterer også sin liste over replika-objekter.
+
+-replika-framework oppdaterer også sin liste over replika-objekter, og andre replicationworkers
 
 
 - når primary-framework dør blir det satt til null, så sover replika-frameworkenne i x milisekunder (multiplum av id), når det våkner sjekkes det at det ikke er satt noen ny primary framework. hvis det ikke er noe nytt primary framework itererer den over alle andre replika-framework og setter seg selv som primary framework.
+
+
+- map må ha attached aok og aov
+
+- må resette inactivelist
+
+unavailable må være på slutten av en funksjon, går ikke å ha den i slutten av en for. kjipt ift. at mange ganger skal man iterere over samlinger hvor det er forventet at objektene kan forsvinne.
+
+
+
+- sjekker unavailable replikaer ved å legge til lnn i en array, så kjøre en locate på replikaen, for så å fjerne lnn fra arrayen. hvis locate feiler vil ikke lnn bli fjernet, og ligger så klar for prosessens neste runde.
+
+
+- måtte threadsafe map.en.
+
+- ordliste:
+	Framework. Hele replikasjonsrammeverket
+	Primary framework. Objektet som har ansvar for å sjekke at replikaer/primærkopi lever.
+	Worker. Replikerte Framework. Sjekker kun om primary framework lever.
+	Replicable. Objekter som er konforme til denne typen kan replikeres.
+	
+	
+. når primary copy oppdateres sendes den som en parameter til replika.
+- når en replika oppdateres sendes den som parameter til pc som da oppdaterer verdier og notifiserer rammeverket.
+
+
+Error scenarier:
+
+- hvis replikaliste 1 ikke får Alle workers før primary fw går ned havner vi i en situasjon med to primaries. Sannsynligvis vil det være noen workers som vet om replikaliste 1, og i så fall blir primaryfw satt på worker1 og da blir isPrimaryFW satt til false. 
