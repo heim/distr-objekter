@@ -4,6 +4,10 @@ Funksjonell beskrivelse:
 -framework.create
 	
 -Kaller replicateme
+- fixer replikaene og workerne.
+- logikk for å forhindre at replikaer havner på samme node som primary copy eller en annen replika. hver node med replika har også en worker.
+
+- prosess som sjekker om replikaene lever. her settes også primary framework via (addobserver) på replikaene. dette gjøres for å sørge for at det er riktig primary framework på replikaene, hensiktsmessig å gjøre det her ift. en ny loop i notifyWorkersThatIAmNewPrimaryFramework pga at replika kan være unavailable.
 	
 -Framework lager en passiv kopi på samme noder som  replikaene. de gis en id som brukes til å velge nytt primary framework
 	
@@ -39,10 +43,18 @@ unavailable må være på slutten av en funksjon, går ikke å ha den i slutten 
 	Replicable. Objekter som er konforme til denne typen kan replikeres.
 	
 	
-. når primary copy oppdateres sendes den som en parameter til replika.
+. når primary copy oppdateres sendes den som en parameter til replika. valgte dette fremfor at replika må kalle 
 - når en replika oppdateres sendes den som parameter til pc som da oppdaterer verdier og notifiserer rammeverket.
 
 
 Error scenarier:
 
-- hvis replikaliste 1 ikke får Alle workers før primary fw går ned havner vi i en situasjon med to primaries. Sannsynligvis vil det være noen workers som vet om replikaliste 1, og i så fall blir primaryfw satt på worker1 og da blir isPrimaryFW satt til false. 
+- hvis replikaliste 1 ikke får Alle workers før primary fw går ned havner vi i en situasjon med to primaries. Sannsynligvis vil det være noen workers som vet om replikaliste 1, og i så fall blir primaryfw satt på worker1 og da blir isPrimaryFW satt til false. (dvs. hvis primaryFW går ned mindre enn 2 sekunder etter det worker 1 er produsert. også hvis pfw går ned midt i replicateMe.)
+
+
+Forbedringspotensialer.
+
+Lage en egen Map som fjerner objekter som ikke kan locates. Fjerner en del av logikken fra selve frameworket. Renere kode.
+
+
+
